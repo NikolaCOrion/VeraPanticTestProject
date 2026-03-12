@@ -12,6 +12,8 @@ name
 age
 '''
 
+users = []
+
 
 @app.get("/my-first-endpoint/")
 def my_first_endpoint():
