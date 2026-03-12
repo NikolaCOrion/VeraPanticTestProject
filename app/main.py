@@ -12,9 +12,17 @@ name
 age
 '''
 
-users = []
+users = [
+    {"id":1, "name": "Vera", "age": 23},
+    {"id":2, "name": "Mila", "age": 23},
+    {"id":3, "name": "David", "age": 24}
+]
 
 
 @app.get("/my-first-endpoint/")
 def my_first_endpoint():
     return {"hello": "world"}
+
+@app.get("/create/")
+def get_users():
+    return users
