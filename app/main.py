@@ -10,6 +10,32 @@ each one should have properties:
 id
 name
 age
+
+GET jednog usera po id
+/users/{id}/
+
+POST novog usera
+/users/
+payload
+{
+ "name": "test",
+ "age": 25
+}
+(trebalo bi da od svih postojecih usera izvuce onog sa najvecim id i da mu dodeli za jedan veci broj za id)
+
+
+PUT postojeceg usera
+/users/{id}/
+
+{
+ "name": "updated",
+ "age": 27
+}
+
+DELETE postojeceg usera
+/users/{id}/
+
+
 '''
 
 users = [
