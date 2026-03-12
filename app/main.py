@@ -23,6 +23,6 @@ users = [
 def my_first_endpoint():
     return {"hello": "world"}
 
-@app.get("/create/")
-def get_users():
+@app.get("/users/")
+def list_users():
     return users
