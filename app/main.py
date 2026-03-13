@@ -1,7 +1,12 @@
 from fastapi import FastAPI
+from typing import Optional
+from pydantic import BaseModel
 
 app = FastAPI()
 
+class UserCreate(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
 
 '''
 create a new endpoint: /users/
@@ -62,13 +67,13 @@ def get_user(id: int):
 
 
 @app.post("/users/")
-def create_user(payload: dict):
+def create_user(payload: UserCreate):
 
     max_id = max(user["id"] for user in users)
     new_user = {
         "id": max_id + 1,
-        "name": payload["name"],
-        "age": payload["age"]
+        "name": payload.name,
+        "age": payload.age
     }
 
     users.append(new_user)
@@ -76,13 +81,13 @@ def create_user(payload: dict):
 
 
 @app.put("/users/{id}/")
-def update_user(id: int, payload: dict):
+def update_user(id: int, payload: UserCreate):
     for user in users:
         if user["id"] == id:
-            if "name" in payload:
-                user["name"] = payload["name"]
-            if "age" in payload:
-                user["age"] = payload["age"]
+            if payload.name is not None:
+                user["name"] = payload.name
+            if payload.age is not None:
+                user["age"] = payload.age
             return user
 
     return {"message": "User not found"}
