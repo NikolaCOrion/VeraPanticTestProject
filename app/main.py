@@ -52,3 +52,47 @@ def my_first_endpoint():
 @app.get("/users/")
 def list_users():
     return users
+
+@app.get("/users/{id}/")
+def get_user(id: int):
+    for user in users:
+        if user["id"] == id:
+            return user
+    return {"message": "User not found"}
+
+
+@app.post("/users/")
+def create_user(payload: dict):
+
+    max_id = max(user["id"] for user in users)
+    new_user = {
+        "id": max_id + 1,
+        "name": payload["name"],
+        "age": payload["age"]
+    }
+
+    users.append(new_user)
+    return new_user
+
+
+@app.put("/users/{id}/")
+def update_user(id: int, payload: dict):
+    for user in users:
+        if user["id"] == id:
+            if "name" in payload:
+                user["name"] = payload["name"]
+            if "age" in payload:
+                user["age"] = payload["age"]
+            return user
+
+    return {"message": "User not found"}
+
+
+@app.delete("/users/{id}/")
+def delete_user(id: int):
+    for user in users:
+        if user["id"] == id:
+            users.remove(user)
+            return {"message": "User deleted"}
+
+    return {"message": "User not found"}
