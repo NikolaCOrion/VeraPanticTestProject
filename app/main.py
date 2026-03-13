@@ -5,6 +5,10 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class UserCreate(BaseModel):
+    name: str
+    age: int
+
+class UserUpdate(BaseModel):
     name: Optional[str] = None
     age: Optional[int] = None
 
@@ -68,20 +72,18 @@ def get_user(id: int):
 
 @app.post("/users/")
 def create_user(payload: UserCreate):
-
     max_id = max(user["id"] for user in users)
     new_user = {
         "id": max_id + 1,
         "name": payload.name,
         "age": payload.age
     }
-
     users.append(new_user)
     return new_user
 
 
 @app.put("/users/{id}/")
-def update_user(id: int, payload: UserCreate):
+def update_user(id: int, payload: UserUpdate):
     for user in users:
         if user["id"] == id:
             if payload.name is not None:
