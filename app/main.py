@@ -4,50 +4,15 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-class UserCreate(BaseModel):
+class ProfileCreate(BaseModel):
     name: str
     age: int
 
-class UserUpdate(BaseModel):
+class ProfileUpdate(BaseModel):
     name: Optional[str] = None
     age: Optional[int] = None
 
-'''
-create a new endpoint: /users/
-and create a list of hardcoded user objects
-each one should have properties:
-id
-name
-age
-
-GET jednog usera po id
-/users/{id}/
-
-POST novog usera
-/users/
-payload
-{
- "name": "test",
- "age": 25
-}
-(trebalo bi da od svih postojecih usera izvuce onog sa najvecim id i da mu dodeli za jedan veci broj za id)
-
-
-PUT postojeceg usera
-/users/{id}/
-
-{
- "name": "updated",
- "age": 27
-}
-
-DELETE postojeceg usera
-/users/{id}/
-
-
-'''
-
-users = [
+profiles = [
     {"id":1, "name": "Vera", "age": 23},
     {"id":2, "name": "Mila", "age": 23},
     {"id":3, "name": "David", "age": 24}
@@ -58,48 +23,48 @@ users = [
 def my_first_endpoint():
     return {"hello": "world"}
 
-@app.get("/users/")
-def list_users():
-    return users
+@app.get("/profiles/")
+def list_profiles():
+    return profiles
 
-@app.get("/users/{id}/")
-def get_user(id: int):
-    for user in users:
-        if user["id"] == id:
-            return user
-    return {"message": "User not found"}
+@app.get("/profiles/{id}/")
+def get_profile(id: int):
+    for profile in profiles:
+        if profiles["id"] == id:
+            return profile
+    return {"message": "Profile not found"}
 
 
-@app.post("/users/")
-def create_user(payload: UserCreate):
-    max_id = max(user["id"] for user in users)
-    new_user = {
+@app.post("/profiles/")
+def create_profile(payload: ProfileCreate):
+    max_id = max(profile["id"] for profile in profiles)
+    new_profile = {
         "id": max_id + 1,
         "name": payload.name,
         "age": payload.age
     }
-    users.append(new_user)
-    return new_user
+    profiles.append(new_profile)
+    return new_profile
 
 
-@app.put("/users/{id}/")
-def update_user(id: int, payload: UserUpdate):
-    for user in users:
-        if user["id"] == id:
+@app.put("/profiles/{id}/")
+def update_profile(id: int, payload: ProfileUpdate):
+    for profile in profiles:
+        if profile["id"] == id:
             if payload.name is not None:
-                user["name"] = payload.name
+                profile["name"] = payload.name
             if payload.age is not None:
-                user["age"] = payload.age
-            return user
+                profile["age"] = payload.age
+            return profile
 
-    return {"message": "User not found"}
+    return {"message": "Profile not found"}
 
 
-@app.delete("/users/{id}/")
-def delete_user(id: int):
-    for user in users:
-        if user["id"] == id:
-            users.remove(user)
-            return {"message": "User deleted"}
+@app.delete("/profiles/{id}/")
+def delete_profile(id: int):
+    for profile in profiles:
+        if profile["id"] == id:
+            profiles.remove(profile)
+            return {"message": "Profile deleted"}
 
-    return {"message": "User not found"}
+    return {"message": "Profile not found"}
