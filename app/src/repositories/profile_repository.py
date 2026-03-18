@@ -13,7 +13,13 @@ def get_profile(db, profile_id):
 def create_profile(db, profile):
     logging.info("Creating profile...")
 
-    db_profile = ProfileModel(**profile.dict())
+    db_profile = ProfileModel(
+        name=profile.name,
+        age=profile.age,
+    )
+
+    db.add(db_profile)
+    db.commit()
 
     db.add(db_profile)
     db.commit()
@@ -27,16 +33,11 @@ def update_profile(db, profile_id, profile):
 
     db_profile = db.query(ProfileModel).filter(ProfileModel.id == profile_id).first()
 
-    if not db_profile:
-        return None
-
-    for key, value in profile.dict(exclude_unset=True).items():
-        setattr(db_profile, key, value)
-
+    db_profile.name = profile.name
+    db_profile.age = profile.age
     db.commit()
-    db.refresh(db_profile)
 
-    return db_profile
+    return {"message": f"profile with id {profile_id} updated"}
 
 
 def delete_profile(db, profile_id):
