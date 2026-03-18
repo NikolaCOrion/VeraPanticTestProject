@@ -20,20 +20,26 @@ def create_profile(db, profile):
 
     db.add(db_profile)
     db.commit()
+    db.refresh(db_profile)  # osveži nakon commita
 
     return db_profile
 
 
 def update_profile(db, profile_id, profile):
-    logging.info(f"Updating profile {profile_id}...")
-
     db_profile = db.query(ProfileModel).filter(ProfileModel.id == profile_id).first()
 
-    db_profile.name = profile.name
-    db_profile.age = profile.age
-    db.commit()
+    if not db_profile:
+        return None
 
-    return {"message": f"profile with id {profile_id} updated"}
+    update_data = profile.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(db_profile, key, value)
+
+    db.commit()
+    db.refresh(db_profile)
+
+    return db_profile
 
 
 def delete_profile(db, profile_id):

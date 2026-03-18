@@ -44,29 +44,59 @@ class TestProfiles:
         assert len(response.json()) == self.number_of_profiles
 
     def test_get_one(self) -> None:
-        # TODO
-        pass
+        profile_id = self.profiles[0].id
+        response = client.get(f"{route}/{profile_id}")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["id"] == profile_id
+        assert data["name"] == self.profiles[0].name
+        assert data["age"] == self.profiles[0].age
 
-    def test_get_nonexistent_401(self) -> None:
-        # TODO
-        pass
+    def test_get_nonexistent_404(self) -> None:
+        nonexistent_id = 9999
+        response = client.get(f"{route}/{nonexistent_id}")
+        assert response.status_code == 404
 
     def test_create(self) -> None:
-        # TODO
-        pass
+        new_profile_data = {"name": "New Profile", "age": 30}
+        response = client.post(route, json=new_profile_data)
+        assert response.status_code == 201
+        data = response.json()
+        assert data["name"] == new_profile_data["name"]
+        assert data["age"] == new_profile_data["age"]
+
+        db_profile = self.db.query(ProfileModel).filter_by(id=data["id"]).first()
+        assert db_profile is not None
 
     def test_update(self) -> None:
-        # TODO
-        pass
+        profile_id = self.profiles[0].id
+        update_data = {"name": "Updated Name", "age": 35}
+        response = client.put(f"{route}/{profile_id}", json=update_data)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["name"] == update_data["name"]
+        assert data["age"] == update_data["age"]
 
-    def test_update_nonexistent_401(self) -> None:
-        # TODO
-        pass
+        self.db.expire_all()  # OVO
+        db_profile = self.db.query(ProfileModel).filter_by(id=profile_id).first()
+        assert db_profile.name == update_data["name"]
+        assert db_profile.age == update_data["age"]
+
+    def test_update_nonexistent_404(self) -> None:
+        nonexistent_id = 9999
+        update_data = {"name": "No One", "age": 50}
+        response = client.put(f"{route}/{nonexistent_id}", json=update_data)
+        assert response.status_code == 404
 
     def test_delete(self) -> None:
-        # TODO
-        pass
+        profile_id = self.profiles[0].id
+        response = client.delete(f"{route}/{profile_id}")
+        assert response.status_code == 200  # successful delete
 
-    def test_delete_nonexistent_401(self) -> None:
-        # TODO
-        pass
+        db_profile = self.db.query(ProfileModel).filter_by(id=profile_id).first()
+        assert db_profile is None
+
+    def test_delete_nonexistent_404(self) -> None:
+        nonexistent_id = 9999
+        response = client.delete(f"{route}/{nonexistent_id}")
+        assert response.status_code == 404
