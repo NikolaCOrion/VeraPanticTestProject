@@ -21,10 +21,6 @@ def create_profile(db, profile):
     db.add(db_profile)
     db.commit()
 
-    db.add(db_profile)
-    db.commit()
-    db.refresh(db_profile)
-
     return db_profile
 
 
