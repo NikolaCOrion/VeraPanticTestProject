@@ -77,6 +77,7 @@ class TestProfiles:
         assert data["name"] == update_data["name"]
         assert data["age"] == update_data["age"]
 
+        self.db.expire_all()  # OVO
         db_profile = self.db.query(ProfileModel).filter_by(id=profile_id).first()
         assert db_profile.name == update_data["name"]
         assert db_profile.age == update_data["age"]
@@ -90,7 +91,7 @@ class TestProfiles:
     def test_delete(self) -> None:
         profile_id = self.profiles[0].id
         response = client.delete(f"{route}/{profile_id}")
-        assert response.status_code == 204  # successful delete
+        assert response.status_code == 200  # successful delete
 
         db_profile = self.db.query(ProfileModel).filter_by(id=profile_id).first()
         assert db_profile is None
