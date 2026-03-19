@@ -12,6 +12,8 @@ class Profile(Base):
     name = Column(String, nullable=False)
     age = Column(Float, nullable=False)
 
+    projects = relationship("Profile", back_populates="profile")
+
 
 class Project(Base):
     __tablename__ = "project"
