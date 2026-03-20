@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 
 from routes.profile_routes import profile_router
+from routes.project_routes import router as project_router
 
 
 app = FastAPI()
 
 
 app.include_router(profile_router)
+app.include_router(project_router)
 
 
 

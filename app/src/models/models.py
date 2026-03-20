@@ -12,7 +12,7 @@ class Profile(Base):
     name = Column(String, nullable=False)
     age = Column(Float, nullable=False)
 
-    projects = relationship("Profile", back_populates="profile")
+    projects = relationship("Project", back_populates="profile")
 
 
 class Project(Base):
